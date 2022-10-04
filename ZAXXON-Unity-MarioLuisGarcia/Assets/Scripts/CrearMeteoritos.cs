@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class CrearMeteoritos : MonoBehaviour
 {
-    public GameObject[] Asteroides;
-    private Transform RefPos;
+    [SerializeField] GameObject asteroides;
+    [SerializeField] Transform refPos;
+     float randomRangeH = 20f;
+     float randomRangeV = 11f;
+     float randomScaleMAX = 3f;
+     float tiempoSpawn = 0.1f;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine("MeteorCorrutine");
     }
 
     // Update is called once per frame
@@ -19,13 +23,25 @@ public class CrearMeteoritos : MonoBehaviour
         
     }
 
+
     void CrearObstaculo()
     {
-        int r = Random.Range(0, Asteroides.Length);
-        float posRandom = Random.Range(-20f, 20f);
-        float randomY = Random.Range(-20f, 20f);
-        Vector3 DestPos = new Vector3(posRandom, randomY, 0);
-        Vector3 NewPos = RefPos.position + DestPos;
-        Instantiate(Asteroides[r], NewPos, Quaternion.identity);
+        float randomRangeX = Random.Range(-randomRangeH, randomRangeH);
+        float randomRangeY = Random.Range(-randomRangeV, randomRangeV);
+        float randomScale = Random.Range(1f, randomScaleMAX);
+        Vector3 randomPos = new Vector3(randomRangeX, randomRangeY, refPos.position.z);
+        GameObject newObject = Instantiate(asteroides, randomPos, Quaternion.identity) as GameObject;
+        newObject.transform.localScale= new Vector3(randomScale, randomScale, randomScale);
     }
+
+    IEnumerator MeteorCorrutine()
+    {
+        for (int n = 0; ; n++)
+        {
+            CrearObstaculo();
+            yield return new WaitForSeconds(tiempoSpawn);
+        }
+    }
+
+
 }
